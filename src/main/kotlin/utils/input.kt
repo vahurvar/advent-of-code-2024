@@ -13,15 +13,14 @@ fun getAoC2024Input(dayNumber: String, fileName: String = "input.txt"): String {
         return file.readText().trim()
     }
 
-    val input = fetchInput(dayNumber)
-    file.writeText(input)
-
-    return input
+    return fetchInput(dayNumber).also {
+        file.writeText(it)
+    }
 }
 
 private fun fetchInput(dayNumber: String): String {
     val session = File("session.txt").readText().trim()
-    val dayWithoutLeadingZero = dayNumber.filter { it != '0' }
+    val dayWithoutLeadingZero = if (dayNumber.startsWith("0")) dayNumber.substring(1) else dayNumber
 
     val request = HttpRequest.newBuilder()
         .uri(URI.create("https://adventofcode.com/2024/day/$dayWithoutLeadingZero/input"))

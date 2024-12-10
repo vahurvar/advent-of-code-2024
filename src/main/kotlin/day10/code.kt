@@ -27,13 +27,17 @@ fun main() {
 
 private fun solveFirst(input: String): Int {
     val parsedInput = parseInput(input)
-    return getTrailheads(parsedInput).sumOf { getPathsTo9(parsedInput, it) }
+    return getTrailheads(parsedInput).sumOf { getNumberOfPathsTo9SingleVisit(parsedInput, it) }
 }
 
 private fun solveSecond(input: String): Int {
     val parsedInput = parseInput(input)
-    return getTrailheads(parsedInput).sumOf { getAllPathsTo9(parsedInput, it) }
+    return getTrailheads(parsedInput).sumOf { getNrOfAllPathsTo9(parsedInput, it) }
 }
+
+private fun parseInput(input: String): List<List<Int>> = input
+    .lines()
+    .map { line -> line.map { it.digitToInt() } }
 
 private fun getTrailheads(input: List<List<Int>>): Set<Point> {
     val trailheads = mutableSetOf<Point>()
@@ -49,11 +53,7 @@ private fun getTrailheads(input: List<List<Int>>): Set<Point> {
     return trailheads
 }
 
-private fun parseInput(input: String): List<List<Int>> = input
-    .lines()
-    .map { line -> line.map { it.digitToInt() } }
-
-private fun getPathsTo9(input: List<List<Int>>, head: Point): Int {
+private fun getNumberOfPathsTo9SingleVisit(input: List<List<Int>>, head: Point): Int {
     var count = 0
 
     val visited = mutableSetOf<Point>()
@@ -78,33 +78,33 @@ private fun getPathsTo9(input: List<List<Int>>, head: Point): Int {
     return count
 }
 
-private fun getAllPathsTo9(input: List<List<Int>>, head: Point): Int {
-    val paths = mutableSetOf<Set<Point>>()
+private fun getNrOfAllPathsTo9(input: List<List<Int>>, head: Point): Int {
+    var paths = 0
+
+    val visitedPaths = mutableSetOf<Set<Point>>()
 
     val stack = mutableListOf(setOf(head))
 
     while (stack.isNotEmpty()) {
         val path = stack.removeLast()
-        val point = path.last()
 
-        if (!paths.add(path)) {
+        if (!visitedPaths.add(path)) {
             continue
         }
 
+        val point = path.last()
+
         if (input[point.x][point.y] == 9) {
-            paths.add(path)
+            paths++
             continue
         }
 
         point.neighbours()
             .filter { isPointInBounds(it, input) }
             .filter { input[it.x][it.y] - input[point.x][point.y] == 1 }
-            .filter { it !in path }
             .forEach { stack.add(path + it) }
     }
 
     return paths
-        .map { it.last() }
-        .count { input[it.x][it.y] == 9 }
 }
 

@@ -20,7 +20,7 @@ fun getAoC2024Input(dayNumber: String, fileName: String = "input.txt"): String {
 
 private fun fetchInput(dayNumber: String): String {
     val session = File("session.txt").readText().trim()
-    val dayWithoutLeadingZero = if (dayNumber.startsWith("0")) dayNumber.substring(1) else dayNumber
+    val dayWithoutLeadingZero = dayNumber.trimStart { it == '0' }
 
     val request = HttpRequest.newBuilder()
         .uri(URI.create("https://adventofcode.com/2024/day/$dayWithoutLeadingZero/input"))

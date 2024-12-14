@@ -20,6 +20,10 @@ private val testInput = """
     Prize: X=18641, Y=10279
 """.trimIndent()
 
+private data class Button(val x: Long, val y: Long)
+private data class Prize(val x: Long, val y: Long)
+private data class Game(val aButton: Button, val bButton: Button, val prize: Prize)
+
 fun main() {
     val input = getAoC2024Input("13")
 
@@ -33,11 +37,11 @@ fun main() {
 private fun solveFirst(input: String): Long = parseInput(input).mapNotNull { solve(it) }.sum()
 
 private fun solveSecond(input: String): Long {
-    val part2ToAdd = 10000000000000
+    val toAdd = 10000000000000
 
     return parseInput(input)
         .map {
-            val newPrize = Prize(it.prize.x + part2ToAdd, it.prize.y + part2ToAdd)
+            val newPrize = Prize(it.prize.x + toAdd, it.prize.y + toAdd)
             it.copy(prize = newPrize)
         }
         .mapNotNull { solve(it) }
@@ -45,13 +49,11 @@ private fun solveSecond(input: String): Long {
 }
 
 private fun solve(game: Game): Long? {
-    val (aPushes, bPushes) = solveLinearEquation(game) ?: return null
-    return calculateTokens(aPushes, bPushes)
+    val (aPushes, bPushes) = solveGameUsingLinearEquationSystem(game) ?: return null
+    return aPushes * 3 + bPushes
 }
 
-private fun calculateTokens(aPushes: Long, bPushes: Long): Long = aPushes * ButtonType.A.cost + bPushes * ButtonType.B.cost
-
-private fun solveLinearEquation(game: Game): Pair<Long, Long>? {
+private fun solveGameUsingLinearEquationSystem(game: Game): Pair<Long, Long>? {
     val a1 = game.aButton.x
     val b1 = game.bButton.x
     val c1 = game.prize.x
@@ -78,14 +80,9 @@ private fun solveLinearEquation(game: Game): Pair<Long, Long>? {
 
 private fun parseInput(input: String): List<Game> {
     fun parseButton(line: String): Button {
-        val name = when {
-            line.startsWith("Button A") -> ButtonType.A
-            line.startsWith("Button B") -> ButtonType.B
-            else -> error("Invalid button name")
-        }
         val x = line.split("X+")[1].split(",")[0].toLong()
         val y = line.split("Y+")[1].toLong()
-        return Button(name, x, y)
+        return Button(x, y)
     }
 
     fun parsePrize(line: String): Prize {
@@ -102,10 +99,5 @@ private fun parseInput(input: String): List<Game> {
         Game(aButton, bButton, prize)
     }
 }
-
-private enum class ButtonType(val cost: Long) { A(3), B(1) }
-private data class Button(val name: ButtonType, val x: Long, val y: Long)
-private data class Prize(val x: Long, val y: Long)
-private data class Game(val aButton: Button, val bButton: Button, val prize: Prize)
 
 private fun isExact(n: Double): Boolean = n == n.toLong().toDouble()

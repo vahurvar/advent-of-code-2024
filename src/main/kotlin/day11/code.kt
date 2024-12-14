@@ -28,18 +28,15 @@ private fun nrOfStonesAfterBlinks(stone: String, blinks: Int): Long {
         blinks == 0 -> {
             return 1
         }
-
         stone == "0" -> {
             nrOfStonesAfterBlinks("1", blinks - 1)
         }
-
         stone.length % 2 == 0 -> {
             val mid = stone.length / 2
             val left = stone.substring(0, mid)
             val right = trimLeadingZeros(stone.substring(mid))
             nrOfStonesAfterBlinks(left, blinks - 1) + nrOfStonesAfterBlinks(right, blinks - 1)
         }
-
         else -> {
             val multipliedBy2024 = (stone.toLong() * 2024).toString()
             nrOfStonesAfterBlinks(multipliedBy2024, blinks - 1)

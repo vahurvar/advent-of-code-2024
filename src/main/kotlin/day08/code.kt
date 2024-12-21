@@ -101,21 +101,9 @@ private fun getAllHarmonicsPoints(
     vector: Point,
     input: List<List<Char>>,
 ): List<Point> {
-    val points = mutableListOf<Point>()
-
-    val (x, y) = point
-    val (xVector, yVector) = vector
-
-    var currentX = x + xVector
-    var currentY = y + yVector
-
-    while (isInBounds(input, currentX to currentY)) {
-        points.add(currentX to currentY)
-        currentX += xVector
-        currentY += yVector
-    }
-
-    return points
+    return generateSequence(point) { (x, y) -> x + vector.first to y + vector.second }
+        .takeWhile { isInBounds(input, it) }
+        .toList()
 }
 
 private fun getAntiNodeLocation(first: Point, second: Point): Pair<Point, Point> {

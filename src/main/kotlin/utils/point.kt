@@ -1,7 +1,7 @@
 package utils
 
 data class Point(val x: Int, val y: Int) {
-    fun neighbours(): List<Point> = listOf(
+    fun neighboursXY(): List<Point> = listOf(
         Point(x + 1, y),
         Point(x - 1, y),
         Point(x, y + 1),
@@ -15,7 +15,7 @@ data class Point(val x: Int, val y: Int) {
         Point(x - 1, y + 1)
     )
 
-    fun allNeighbours(): List<Point> = neighbours() + diagonalNeighbours()
+    fun allNeighbours(): List<Point> = neighboursXY() + diagonalNeighbours()
 
     override fun toString(): String = "($x, $y)"
 }

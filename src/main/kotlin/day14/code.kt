@@ -60,24 +60,16 @@ private fun isPossibleTree(locations: List<Point>, dimensions: Dimensions): Bool
                 continue
             }
 
-            val topFivePoints = (1..5).map { Point(x, (y - it)) }
-                .filter { it.x in 0 until dimensions.width && it.y in 0 until dimensions.height }
-
+            val topFivePoints = (1..5).map { Point(x, (y - it)) }.filter { isInBounds(it, dimensions) }
             if (topFivePoints.size != 5) continue
 
-            val bottomFivePoints = (1..5).map { Point(x, (y + it)) }
-                .filter { it.x in 0 until dimensions.width && it.y in 0 until dimensions.height }
-
+            val bottomFivePoints = (1..5).map { Point(x, (y + it)) }.filter { isInBounds(it, dimensions) }
             if (bottomFivePoints.size != 5) continue
 
-            val leftFivePoints = (1..5).map { Point((x - it), y) }
-                .filter { it.x in 0 until dimensions.width && it.y in 0 until dimensions.height }
-
+            val leftFivePoints = (1..5).map { Point((x - it), y) }.filter { isInBounds(it, dimensions) }
             if (leftFivePoints.size != 5) continue
 
-            val rightFivePoints = (1..5).map { Point((x + it), y) }
-                .filter { it.x in 0 until dimensions.width && it.y in 0 until dimensions.height }
-
+            val rightFivePoints = (1..5).map { Point((x + it), y) }.filter { isInBounds(it, dimensions) }
             if (rightFivePoints.size != 5) continue
 
             val allValuesMarked = (topFivePoints + bottomFivePoints + leftFivePoints + rightFivePoints)
@@ -90,6 +82,10 @@ private fun isPossibleTree(locations: List<Point>, dimensions: Dimensions): Bool
     }
 
     return false
+}
+
+private fun isInBounds(point: Point, dimensions: Dimensions): Boolean {
+    return point.x in 0 until dimensions.width && point.y in 0 until dimensions.height
 }
 
 private fun getCurrentLocationsGrid(locations: List<Point>, dimensions: Dimensions): Array<Array<Char>> {
@@ -116,8 +112,9 @@ private fun solveFirst(input: String, dimensions: Dimensions): Int {
 
 private fun mapToQuadrants(point: Point, dimensions: Dimensions): Int? {
     val (x, y) = point
-    val xMid = dimensions.width / 2
-    val yMid = dimensions.height / 2
+    val (width, height) = dimensions
+    val xMid = width / 2
+    val yMid = height / 2
 
     if (x == xMid || y == yMid) {
         return null

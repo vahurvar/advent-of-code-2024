@@ -69,7 +69,7 @@ private fun getNumberOfPathsTo9SingleVisit(input: List<List<Int>>, head: Point):
             continue
         }
 
-        point.neighbours()
+        point.neighboursXY()
             .filter { isPointInBounds(it, input) }
             .filter { input[it.x][it.y] - input[point.x][point.y] == 1 }
             .forEach { stack.add(it) }
@@ -99,7 +99,7 @@ private fun getNrOfAllPathsTo9(input: List<List<Int>>, head: Point): Int {
             continue
         }
 
-        point.neighbours()
+        point.neighboursXY()
             .filter { isPointInBounds(it, input) }
             .filter { input[it.x][it.y] - input[point.x][point.y] == 1 }
             .forEach { stack.add(path + it) }

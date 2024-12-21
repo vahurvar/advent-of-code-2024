@@ -155,7 +155,7 @@ private fun findRegion(grid: List<List<Char>>, point: Point): Set<Point> {
         }
         region.add(current)
 
-        current.neighbours()
+        current.neighboursXY()
             .filter { isPointInBounds(it, grid) }
             .filter { grid[it.x][it.y] == value }
             .forEach { stack.add(it) }
@@ -165,7 +165,7 @@ private fun findRegion(grid: List<List<Char>>, point: Point): Set<Point> {
 }
 
 private fun getNrOfBoundaries(region: Set<Point>): Int = region.sumOf {
-    it.neighbours().count { neighbour -> neighbour !in region }
+    it.neighboursXY().count { neighbour -> neighbour !in region }
 }
 
 private fun getBoundaryPoints(region: Set<Point>): Set<Point> = region
